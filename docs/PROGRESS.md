@@ -2,7 +2,7 @@
 ## Kurukshetra Kart — IC Go-Kart Telemetry, Predictive Analytics & Digital Twin Platform
 **Organisation:** Kurukshetra Racing, SKCET  
 **Competition:** EKVC Season 4 — Innovation Round  
-**Last Updated:** 8 November 2026 (Phase 4 Complete)
+**Last Updated:** 8 November 2026 (Phase 5 Predictive Models Complete)
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Status |
 | :--- | :--- |
-| **Current Phase** | **Phase 4 — Data Engineering & Analytics (COMPLETED)** |
-| **Next Phase** | **Phase 5 — Machine Learning Predictive Analytics** |
+| **Current Phase** | **Phase 5 — Machine Learning Predictive Analytics (IN PROGRESS)** |
+| **Next Phase** | **Phase 6 — Digital Twin & Simulation** |
 | **Repository Integrity** | Verified — backend, frontend, telemetry, analytics, and digital-twin modules present |
-| **Test Suite Status** | **22 backend tests passing**; frontend production build passing; lint warnings remain |
+| **Test Suite Status** | **25 backend tests passing**; frontend production build passing; lint warnings remain |
 | **Hardware Readiness** | ESP32 pinout & 16-byte protocol specification defined |
 
 ---
@@ -54,9 +54,9 @@ All four developer branches were created from the latest `origin/main` and publi
 | **Lap & Sector Segmentation** | Phase 4 | **COMPLETED** | Unit tests | GPS/dead reckoning lap detection, sector splits |
 | **Multi-Lap Trace Comparison** | Phase 4 | **COMPLETED** | Unit tests | Delta time ($\Delta t$) and speed ($\Delta v$) |
 | **Engine Anomaly Detector** | Phase 5 | **COMPLETED** | `test_ml_anomaly.py` | Isolation Forest, persisted joblib registry, training and prediction API |
-| **Lap-Time Predictor** | Phase 5 | *Pending* | - | XGBoost / Random Forest, session group split |
-| **Driver Behaviour Classifier**| Phase 5 | *Pending* | - | Steering rate, throttle onset consistency |
-| **Dynamic Grip Estimator** | Phase 5 | *Pending* | - | Effective $\mu$ from lateral G and radius |
+| **Lap-Time Predictor** | Phase 5 | **COMPLETED** | `test_phase5_models.py` | Random Forest predictor with session-grouped validation |
+| **Driver Behaviour Classifier**| Phase 5 | **COMPLETED** | `test_phase5_models.py` | Random Forest classification of telemetry-derived driving behaviour |
+| **Dynamic Grip Estimator** | Phase 5 | **COMPLETED** | `test_phase5_models.py` | Conservative effective $\mu$ from lateral G and corner geometry |
 | **Point-Mass Physics Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Discretised track, power/drag/grip limits |
 | **Calibration Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Iterative RMSE calibration |
 | **What-If Scenario Simulator** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Parameter delta evaluation |
