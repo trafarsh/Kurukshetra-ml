@@ -22,6 +22,7 @@ from app.api.routes import (
     sessions_router,
     telemetry_router,
     ml_router,
+    phase7_router,
 )
 
 logger = get_logger("main")
@@ -132,6 +133,7 @@ app.include_router(tracks_router, prefix=settings.API_V1_STR)
 app.include_router(sessions_router, prefix=settings.API_V1_STR)
 app.include_router(telemetry_router, prefix=settings.API_V1_STR)
 app.include_router(ml_router, prefix=settings.API_V1_STR)
+app.include_router(phase7_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/", tags=["Root"])

@@ -2,7 +2,7 @@
 ## Kurukshetra Kart — IC Go-Kart Telemetry, Predictive Analytics & Digital Twin Platform
 **Organisation:** Kurukshetra Racing, SKCET  
 **Competition:** EKVC Season 4 — Innovation Round  
-**Last Updated:** 8 November 2026 (Phase 5 Predictive Models Complete)
+**Last Updated:** 8 November 2026 (Phase 8 Release Readiness Complete)
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Status |
 | :--- | :--- |
-| **Current Phase** | **Phase 5 — Machine Learning Predictive Analytics (IN PROGRESS)** |
-| **Next Phase** | **Phase 6 — Digital Twin & Simulation** |
+| **Current Phase** | **Phase 8 — End-to-End QA & Release (COMPLETED)** |
+| **Next Phase** | **Maintenance and hardware validation** |
 | **Repository Integrity** | Verified — backend, frontend, telemetry, analytics, and digital-twin modules present |
-| **Test Suite Status** | **25 backend tests passing**; frontend production build passing; lint warnings remain |
+| **Test Suite Status** | **29 backend tests passing**; frontend production build and CI workflow configured |
 | **Hardware Readiness** | ESP32 pinout & 16-byte protocol specification defined |
 
 ---
@@ -60,10 +60,10 @@ All four developer branches were created from the latest `origin/main` and publi
 | **Point-Mass Physics Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Discretised track, power/drag/grip limits |
 | **Calibration Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Iterative RMSE calibration |
 | **What-If Scenario Simulator** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Parameter delta evaluation |
-| **Recommendation Engine** | Phase 7 | *Pending* | - | Evidence-based setup advice generation |
-| **PDF & CSV Report Exporter** | Phase 7 | *Pending* | - | Downloadable debrief dossiers |
-| **Synchronised Session Replay**| Phase 7 | *Pending* | - | Interactive telemetry-track synchronized playback |
-| **End-to-End QA & Release** | Phase 8 | *Pending* | - | Full test pass, user manual, deployment ready |
+| **Recommendation Engine** | Phase 7 | **COMPLETED** | `test_phase7.py` | Evidence-based setup advice API |
+| **PDF & CSV Report Exporter** | Phase 7 | **COMPLETED** | `test_phase7.py` | Downloadable debrief dossier and telemetry exports |
+| **Synchronised Session Replay**| Phase 7 | **COMPLETED** | `test_phase7.py` | Timestamp-normalized replay preparation API |
+| **End-to-End QA & Release** | Phase 8 | **COMPLETED** | Backend suite + frontend build | CI workflow, full tests, and release validation |
 
 ---
 
@@ -100,28 +100,13 @@ All four developer branches were created from the latest `origin/main` and publi
 - Phase 2 dashboard UI and navigation shell.
 - Phase 3 telemetry decoding, ingestion, WebSockets, TTC, and SD-card import.
 - Phase 4 cleaning, quality summaries, lap/sector segmentation, and lap comparison.
+- Phase 5 engine anomaly detection, lap-time prediction, driver behaviour classification, and grip estimation.
 - Phase 6 digital-twin solver, calibration, and what-if scenario engine.
+- Phase 7 recommendations, PDF/CSV reports, and synchronized replay.
+- Phase 8 backend QA, frontend production build, and CI release workflow.
 
 ## 6. Pending Work
 
-### Immediate: Phase 5 — Machine Learning
-
-1. Build lap-time predictor with session-grouped validation.
-2. Build driver behaviour classifier.
-3. Build dynamic effective-grip estimator.
-4. Add the remaining ML models and model registry metadata.
-5. Add ML training/inference API endpoints and frontend wiring.
-
-### Remaining platform and release work
-
-6. Validate Docker Compose image builds and container startup when Docker is available.
-7. Add mock telemetry generator and complete end-to-end integration coverage.
-8. Complete recommendation engine, PDF/CSV reporting, and synchronized replay.
-9. Add frontend component/store tests.
-10. Complete technical documentation and final release checklist.
-
-## 7. Next Implementation Tasks (Phase 5)
-
-1. Implement the lap-time predictor with session-grouped train/test splits.
-2. Implement the driver behaviour classifier and grip estimator.
-3. Add model registry metadata and inference endpoints for the remaining ML models.
+1. Validate Docker Compose image builds and container startup when Docker is available.
+2. Connect live hardware telemetry and validate sensor calibration on track.
+3. Add frontend component/store tests and hardware-in-the-loop coverage.
