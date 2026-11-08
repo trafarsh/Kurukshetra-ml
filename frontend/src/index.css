@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  --kk-bg-primary: #0B0F19;
+  --kk-bg-secondary: #111827;
+  --kk-bg-card: #1E293B;
+  --kk-bg-input: #374151;
+  --kk-border: #334155;
+  --kk-text-primary: #F1F5F9;
+  --kk-text-secondary: #94A3B8;
+  --kk-text-muted: #64748B;
+  --kk-accent-green: #10B981;
+  --kk-accent-amber: #F59E0B;
+  --kk-accent-red: #EF4444;
+  --kk-accent-blue: #3B82F6;
+  --kk-accent-cyan: #06B6D4;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--kk-bg-primary);
+  color: var(--kk-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for dark engineering telemetry */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--kk-bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--kk-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
