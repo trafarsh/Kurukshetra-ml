@@ -1,4 +1,4 @@
-"""Data quality metrics for raw and cleaned telemetry sessions."""
+"""Auditable data quality metrics for raw and cleaned telemetry sessions."""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -23,7 +23,7 @@ class DataQualityReport:
 
 
 class DataQualityAnalyzer:
-    """Generate an auditable quality summary without changing telemetry data."""
+    """Generate a quality summary without changing telemetry data."""
 
     def __init__(self, expected_interval_us: int = 50_000, gap_tolerance: float = 3.0):
         self.expected_interval_us = expected_interval_us
@@ -44,15 +44,12 @@ class DataQualityAnalyzer:
         valid_timestamps = timestamps.dropna()
         duration_s = (
             float(valid_timestamps.iloc[-1] - valid_timestamps.iloc[0]) / 1_000_000.0
-            if len(valid_timestamps) > 1
-            else 0.0
+            if len(valid_timestamps) > 1 else 0.0
         )
         deltas = valid_timestamps.sort_values().diff().dropna()
-        gap_limit = self.expected_interval_us * self.gap_tolerance
-        timestamp_gaps = int((deltas > gap_limit).sum())
+        timestamp_gaps = int((deltas > self.expected_interval_us * self.gap_tolerance).sum())
         duplicate_timestamps = int(timestamps.duplicated().sum())
         missing_values = int(raw_df.isna().sum().sum())
-        total_values = max(raw_df.size, 1)
         cleaned_count = len(cleaned_df) if cleaned_df is not None else len(raw_df.drop_duplicates("timestamp_us"))
         completeness_pct = round(cleaned_count / len(raw_df) * 100.0, 2)
         noise_ratio_pct = round(rejected_outliers / len(raw_df) * 100.0, 2)

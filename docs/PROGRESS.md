@@ -18,6 +18,19 @@
 
 ---
 
+## 1.1 Development Team & Branch Ownership
+
+| Developer | Branch | Responsibility | Current Status |
+| :--- | :--- | :--- | :--- |
+| **Arshad** | `arshad` | Project lead, integration, and master coordination | **Branch created and pushed** |
+| **Gayathri** | `gayathri` | UI/frontend implementation and ML data cleaning | **Branch created and pushed** |
+| **Muthashim** | `muthashim` | Embedded hardware integration and LCD driver/display work | **Branch created and pushed** |
+| **Shylesh** | `shylesh` | Embedded hardware integration and LCD driver/display work | **Branch created and pushed** |
+
+All four developer branches were created from the latest `origin/main` and published to GitHub.
+
+---
+
 ## 2. Module Implementation Ledger
 
 | Module / Subsystem | Phase | Status | Test Coverage | Notes |

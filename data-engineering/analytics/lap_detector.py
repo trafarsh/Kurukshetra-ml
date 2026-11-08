@@ -117,8 +117,13 @@ class LapDetector:
 
         return laps
 
-    def detect_gps_laps(self, df: pd.DataFrame, start_line_lat: float, start_line_lon: float,
-                        tolerance_m: float = 8.0) -> List[DetectedLap]:
+    def detect_gps_laps(
+        self,
+        df: pd.DataFrame,
+        start_line_lat: float,
+        start_line_lon: float,
+        tolerance_m: float = 8.0,
+    ) -> List[DetectedLap]:
         """Detect crossings of a GPS start line using latitude/longitude samples."""
         required = {"timestamp_us", "latitude", "longitude"}
         missing = required.difference(df.columns)
@@ -128,7 +133,10 @@ class LapDetector:
             return []
 
         distances = self._haversine_m(df["latitude"], df["longitude"], start_line_lat, start_line_lon)
-        crossings = [i for i in range(1, len(df)) if distances.iloc[i] <= tolerance_m < distances.iloc[i - 1]]
+        crossings = [
+            i for i in range(1, len(df))
+            if distances.iloc[i] <= tolerance_m < distances.iloc[i - 1]
+        ]
         return self._build_laps_from_boundaries(df, crossings)
 
     def detect_manual_laps(self, df: pd.DataFrame, marker_indices: List[int]) -> List[DetectedLap]:
@@ -145,21 +153,30 @@ class LapDetector:
                 continue
             lap_df = df.iloc[start:end + 1]
             duration_s = (int(lap_df["timestamp_us"].iloc[-1]) - int(lap_df["timestamp_us"].iloc[0])) / 1e6
-            laps.append(DetectedLap(
-                lap_number=lap_number, start_index=start, end_index=end,
-                start_timestamp_us=int(lap_df["timestamp_us"].iloc[0]),
-                end_timestamp_us=int(lap_df["timestamp_us"].iloc[-1]),
-                lap_time_s=round(duration_s, 2),
-                max_speed_kmh=round(float(lap_df["speed_kmh"].max()), 1) if "speed_kmh" in df else 0.0,
-                min_speed_kmh=round(float(lap_df["speed_kmh"].min()), 1) if "speed_kmh" in df else 0.0,
-                avg_rpm=round(float(lap_df["engine_rpm"].mean()), 0) if "engine_rpm" in df else 0.0,
-                max_lateral_g=round(float(lap_df["accel_y_g"].abs().max()), 2) if "accel_y_g" in df else 0.0,
-                is_valid=15.0 <= duration_s <= 180.0,
-            ))
+            laps.append(
+                DetectedLap(
+                    lap_number=lap_number,
+                    start_index=start,
+                    end_index=end,
+                    start_timestamp_us=int(lap_df["timestamp_us"].iloc[0]),
+                    end_timestamp_us=int(lap_df["timestamp_us"].iloc[-1]),
+                    lap_time_s=round(duration_s, 2),
+                    max_speed_kmh=round(float(lap_df["speed_kmh"].max()), 1) if "speed_kmh" in df else 0.0,
+                    min_speed_kmh=round(float(lap_df["speed_kmh"].min()), 1) if "speed_kmh" in df else 0.0,
+                    avg_rpm=round(float(lap_df["engine_rpm"].mean()), 0) if "engine_rpm" in df else 0.0,
+                    max_lateral_g=round(float(lap_df["accel_y_g"].abs().max()), 2) if "accel_y_g" in df else 0.0,
+                    is_valid=15.0 <= duration_s <= 180.0,
+                )
+            )
         return laps
 
     @staticmethod
-    def _haversine_m(latitudes: pd.Series, longitudes: pd.Series, target_lat: float, target_lon: float) -> pd.Series:
+    def _haversine_m(
+        latitudes: pd.Series,
+        longitudes: pd.Series,
+        target_lat: float,
+        target_lon: float,
+    ) -> pd.Series:
         earth_radius_m = 6_371_000.0
         lat1 = np.radians(latitudes.to_numpy(dtype=float))
         lon1 = np.radians(longitudes.to_numpy(dtype=float))

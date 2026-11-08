@@ -33,9 +33,7 @@ def test_manual_lap_detection_creates_metrics():
 
 
 def test_lap_comparison_returns_delta_trace():
-    reference = _lap_frame(speed=50.0)
-    comparison = _lap_frame(speed=55.0)
-    result = LapComparison(points=10).compare(reference, comparison)
+    result = LapComparison(points=10).compare(_lap_frame(speed=50.0), _lap_frame(speed=55.0))
     assert result.delta_time_s == 0.0
     assert result.max_delta_speed_kmh == 5.0
     assert len(result.delta_speed_kmh) == 10

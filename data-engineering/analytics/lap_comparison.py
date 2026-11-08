@@ -34,9 +34,9 @@ class LapComparison:
         comparison_lap: int = 2,
     ) -> LapDelta:
         for frame in (reference_df, comparison_df):
-            for column in ("timestamp_us", "speed_kmh"):
-                if column not in frame.columns:
-                    raise ValueError(f"Lap data must contain {column}")
+            missing = {"timestamp_us", "speed_kmh"}.difference(frame.columns)
+            if missing:
+                raise ValueError(f"Lap data is missing columns: {sorted(missing)}")
             if len(frame) < 2:
                 raise ValueError("Each lap must contain at least two records")
 
@@ -61,7 +61,6 @@ class LapComparison:
         timestamps = frame["timestamp_us"].to_numpy(dtype=float)
         speeds = frame["speed_kmh"].to_numpy(dtype=float)
         elapsed = timestamps - timestamps[0]
-        if elapsed[-1] <= 0:
+        if elapsed[-1] <= 0 or np.any(np.diff(timestamps) <= 0):
             raise ValueError("Lap timestamps must increase")
-        normalized = elapsed / elapsed[-1]
-        return np.interp(axis, normalized, speeds)
+        return np.interp(axis, elapsed / elapsed[-1], speeds)
