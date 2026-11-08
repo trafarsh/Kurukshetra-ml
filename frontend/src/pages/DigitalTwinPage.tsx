@@ -96,3 +96,4 @@ export const DigitalTwinPage: React.FC = () => {
     </div>
   );
 };
+

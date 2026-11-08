@@ -1,15 +1,17 @@
 """Telemetry ingestion and retrieval endpoints."""
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from app.core.database import get_db
-from app.models.telemetry import TelemetryRecord, Alert
+from app.models.telemetry import TelemetryRecord, TelemetryFile, Alert
 from app.models.session import Session as KartSession
-from app.schemas.telemetry import TelemetryIngestRequest, TelemetrySummaryResponse
+from app.schemas.telemetry import TelemetryIngestRequest, TelemetrySummaryResponse, TelemetryImportResponse
+from app.telemetry.sd_importer import SDCardImporter
 
 router = APIRouter(prefix="/telemetry", tags=["Telemetry"])
+importer = SDCardImporter()
 
 
 @router.post("/ingest", status_code=status.HTTP_200_OK)
@@ -35,7 +37,6 @@ def ingest_telemetry_packet(packet: TelemetryIngestRequest, db: Session = Depend
     )
     db.add(record)
 
-    # Automatically create alert if danger state detected
     if packet.warning_level == "DANGER" and packet.ttc_seconds is not None:
         alert = Alert(
             session_id=packet.session_id,
@@ -48,6 +49,101 @@ def ingest_telemetry_packet(packet: TelemetryIngestRequest, db: Session = Depend
 
     db.commit()
     return {"status": "ACCEPTED", "timestamp_us": packet.timestamp_us}
+
+
+@router.post("/import", response_model=TelemetryImportResponse, status_code=status.HTTP_202_ACCEPTED)
+async def import_sd_card_file(
+    session_id: str = Form(...),
+    file_format: str = Form("CSV"),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Import raw MicroSD telemetry file (CSV or 16-byte binary), validate quality, and ingest."""
+    session = db.query(KartSession).filter(KartSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Session '{session_id}' not found.")
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Empty file uploaded.")
+
+    # 1. Save immutable raw archive
+    saved_path, sha256_hash = importer.save_raw_file(file.filename or "telemetry.csv", content)
+
+    # 2. Parse and evaluate data quality
+    if file_format.upper() == "CSV":
+        decoded_text = content.decode("utf-8", errors="replace")
+        records, quality_report = importer.parse_csv(decoded_text)
+    else:
+        binary_packets, quality_report = importer.parse_binary_stream(content)
+        records = [
+            {
+                "timestamp_us": p.timestamp_ms * 1000,
+                "speed_kmh": p.speed_kmh,
+                "engine_rpm": p.engine_rpm,
+                "engine_temp_c": p.engine_temp_c,
+                "steering_angle_deg": p.steering_angle_deg,
+                "throttle_percent": p.throttle_percent,
+                "accel_x_g": p.accel_x_g,
+                "accel_y_g": p.accel_y_g,
+                "ttc_seconds": p.ttc_seconds,
+                "warning_level": p.warning_level,
+            }
+            for p in binary_packets
+        ]
+
+    # 3. Store file record
+    telemetry_file = TelemetryFile(
+        session_id=session_id,
+        file_name=file.filename or "unknown",
+        file_path=saved_path,
+        file_format=file_format.upper(),
+        file_size_bytes=len(content),
+        record_count=len(records),
+        checksum_sha256=sha256_hash,
+        is_processed=True,
+    )
+    db.add(telemetry_file)
+
+    # 4. Bulk insert valid records
+    db_records = [
+        TelemetryRecord(
+            session_id=session_id,
+            timestamp_us=r["timestamp_us"],
+            speed_kmh=r["speed_kmh"],
+            engine_rpm=r["engine_rpm"],
+            engine_temp_c=r["engine_temp_c"],
+            steering_angle_deg=r["steering_angle_deg"],
+            throttle_percent=r["throttle_percent"],
+            accel_x_g=r["accel_x_g"],
+            accel_y_g=r["accel_y_g"],
+            ttc_seconds=r.get("ttc_seconds"),
+            warning_level=r.get("warning_level", "SAFE"),
+        )
+        for r in records
+    ]
+    if db_records:
+        db.bulk_save_objects(db_records)
+
+    db.commit()
+
+    return TelemetryImportResponse(
+        file_id=telemetry_file.id,
+        session_id=session_id,
+        records_parsed=quality_report.valid_records,
+        duration_seconds=quality_report.duration_seconds,
+        data_quality={
+            "total_records": quality_report.total_records,
+            "valid_records": quality_report.valid_records,
+            "rejected_records": quality_report.rejected_records,
+            "duplicate_timestamps": quality_report.duplicate_timestamps,
+            "clock_resets": quality_report.clock_resets,
+            "missing_data_pct": quality_report.missing_data_pct,
+            "checksum_sha256": quality_report.checksum_sha256,
+            "anomalies": quality_report.anomalies,
+        },
+        laps_detected=0,
+    )
 
 
 @router.get("/{session_id}")
@@ -65,7 +161,6 @@ def get_session_telemetry(
         .limit(limit * downsample)
         .all()
     )
-    # Downsample if requested
     if downsample > 1:
         records = records[::downsample]
 
@@ -131,4 +226,3 @@ def get_telemetry_summary(session_id: str, db: Session = Depends(get_db)):
         max_lateral_g=float(stats.max_lat_g or 0.0),
         active_warnings_count=warnings_count,
     )
-

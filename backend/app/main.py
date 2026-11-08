@@ -2,7 +2,7 @@
 Kurukshetra Kart Telemetry & Digital Twin Platform — Main Application Entrypoint.
 """
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -12,6 +12,7 @@ from app.core.exceptions import KartException
 from app.core.logging_config import get_logger
 from app.core.security import hash_password
 from app.models.user import Role, User
+from app.telemetry.websocket_manager import ws_manager
 from app.api.routes import (
     health_router,
     auth_router,
@@ -29,7 +30,6 @@ def seed_initial_data():
     """Seed initial master roles and default admin user if database is fresh."""
     db = SessionLocal()
     try:
-        # Seed standard roles
         roles = [
             ("ADMIN", "System administrator with full privileges"),
             ("TELEMETRY_ENGINEER", "Pit-wall real-time sensor monitor"),
@@ -48,7 +48,6 @@ def seed_initial_data():
                 db.flush()
             role_map[r_name] = role
 
-        # Seed default admin user
         admin = db.query(User).filter(User.username == "admin").first()
         if not admin:
             admin = User(
@@ -108,6 +107,20 @@ async def kart_exception_handler(request: Request, exc: KartException):
     )
 
 
+# WebSocket live streaming endpoint
+@app.websocket("/ws/v1/telemetry/{session_id}")
+async def websocket_telemetry_endpoint(websocket: WebSocket, session_id: str):
+    await ws_manager.connect(session_id, websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Echo heartbeat or client commands
+            if "ping" in data:
+                await websocket.send_json({"type": "pong", "session_id": session_id})
+    except WebSocketDisconnect:
+        ws_manager.disconnect(session_id, websocket)
+
+
 # Include API v1 Routers
 app.include_router(health_router, prefix="")
 app.include_router(health_router, prefix=settings.API_V1_STR)
@@ -128,5 +141,5 @@ def root():
         "competition": "EKVC Season 4 — Innovation Round",
         "documentation": "/docs",
         "health": "/health",
+        "websocket": "/ws/v1/telemetry/{session_id}",
     }
-

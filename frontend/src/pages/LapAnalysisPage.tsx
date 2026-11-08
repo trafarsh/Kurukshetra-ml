@@ -80,3 +80,4 @@ export const LapAnalysisPage: React.FC = () => {
     </div>
   );
 };
+

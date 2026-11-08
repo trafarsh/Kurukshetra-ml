@@ -87,3 +87,4 @@ export const SessionHistoryPage: React.FC = () => {
     </div>
   );
 };
+

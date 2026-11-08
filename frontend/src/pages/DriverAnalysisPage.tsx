@@ -60,3 +60,4 @@ export const DriverAnalysisPage: React.FC = () => {
     </div>
   );
 };
+
