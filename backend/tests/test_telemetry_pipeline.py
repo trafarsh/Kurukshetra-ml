@@ -113,3 +113,4 @@ def test_sd_card_csv_importer():
     assert "Impossible RPM 28000" in quality.anomalies[0]
     assert len(records) == 3
     assert records[0]["speed_kmh"] == 45.2
+

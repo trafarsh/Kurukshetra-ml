@@ -52,3 +52,4 @@ async def start_udp_gateway(host: str, port: int, callback: Callable[[DecodedTel
     )
     logger.info(f"UDP Telemetry Gateway listening on {host}:{port}")
     return transport, protocol
+

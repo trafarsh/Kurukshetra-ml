@@ -1,5 +1,14 @@
 """Pytest configuration and test fixtures."""
+import os
+import sys
 import pytest
+
+# Ensure all monorepo modules are discoverable on sys.path
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.insert(0, os.path.join(BASE_DIR, "backend"))
+sys.path.insert(0, os.path.join(BASE_DIR, "data-engineering"))
+sys.path.insert(0, os.path.join(BASE_DIR, "digital-twin"))
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -51,4 +60,3 @@ def client(db_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
-

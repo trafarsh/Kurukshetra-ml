@@ -132,3 +132,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_streamer(args.host, args.port, args.rate)
+
