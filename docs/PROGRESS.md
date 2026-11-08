@@ -2,7 +2,7 @@
 ## Kurukshetra Kart — IC Go-Kart Telemetry, Predictive Analytics & Digital Twin Platform
 **Organisation:** Kurukshetra Racing, SKCET  
 **Competition:** EKVC Season 4 — Innovation Round  
-**Last Updated:** November 2026 (Phase 0 Complete)  
+**Last Updated:** 8 November 2026 (Phase 4 Complete)
 
 ---
 
@@ -10,10 +10,10 @@
 
 | Metric | Status |
 | :--- | :--- |
-| **Current Phase** | **Phase 0 — Planning & Architecture (COMPLETED)** |
-| **Next Phase** | **Phase 1 — Software Foundation** |
-| **Repository Integrity** | Verified — planning documents inspected, specs ground in hardware realities |
-| **Test Suite Status** | Test harness scaffolding ready for Phase 1 |
+| **Current Phase** | **Phase 4 — Data Engineering & Analytics (COMPLETED)** |
+| **Next Phase** | **Phase 5 — Machine Learning Predictive Analytics** |
+| **Repository Integrity** | Verified — backend, frontend, telemetry, analytics, and digital-twin modules present |
+| **Test Suite Status** | **22 backend tests passing**; frontend production build passing; lint warnings remain |
 | **Hardware Readiness** | ESP32 pinout & 16-byte protocol specification defined |
 
 ---
@@ -27,26 +27,26 @@
 | **Database Schema & Models** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/DATABASE.md` |
 | **API Specification** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/API.md` |
 | **Development Roadmap** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/DEVELOPMENT_ROADMAP.md` |
-| **Backend Core & Config** | Phase 1 | *Pending* | - | FastAPI app, CORS, logging, health |
-| **Database Models & Alembic** | Phase 1 | *Pending* | - | SQLAlchemy 2.0 entities, SQLite migrations |
-| **Frontend Scaffolding** | Phase 1 | *Pending* | - | React, Vite, Tailwind, Router, TanStack Query |
-| **Docker Development Env** | Phase 1 | *Pending* | - | Dockerfile, docker-compose.yml |
-| **Navigation & Topbar** | Phase 2 | *Pending* | - | Dark motorsport UI, connection status |
-| **11 Dashboard Views** | Phase 2 | *Pending* | - | Overview, Live, Track, Lap, Driver, Twin, etc. |
-| **16-Byte Packet Decoder** | Phase 3 | *Pending* | - | Bitfield unpacking, XOR checksum |
-| **Live Telemetry & WebSockets**| Phase 3 | *Pending* | - | UDP listener, async WebSocket broadcaster |
-| **Time-to-Contact (TTC) Engine**| Phase 3 | *Pending* | - | Physics closing speed & warning thresholds |
-| **SD-Card File Importer** | Phase 3 | *Pending* | - | Multi-part upload, CSV/binary stream parser |
-| **Data Quality & Cleaning** | Phase 4 | *Pending* | - | Missing clock/spike detection, audit report |
-| **Lap & Sector Segmentation** | Phase 4 | *Pending* | - | GPS/dead reckoning lap detection, sector splits |
-| **Multi-Lap Trace Comparison** | Phase 4 | *Pending* | - | Delta time ($\Delta t$) and speed ($\Delta v$) |
-| **Engine Anomaly Detector** | Phase 5 | *Pending* | - | Isolation Forest, model serialization |
+| **Backend Core & Config** | Phase 1 | **COMPLETED** | `test_health.py` | FastAPI app, CORS, config, logging, health |
+| **Database Models & Alembic** | Phase 1 | **COMPLETED** | `test_database.py`, Alembic upgrade/downgrade | SQLAlchemy models, SQLite setup, initial migration, and migration runner |
+| **Frontend Scaffolding** | Phase 1 | **COMPLETED** | Build | React, Vite, Tailwind, Router, TanStack Query |
+| **Docker Development Env** | Phase 1 | **PARTIAL** | Static configuration | Dockerfiles and Compose file are wired; Docker CLI unavailable for image validation |
+| **Navigation & Topbar** | Phase 2 | **COMPLETED** | Build | Dark motorsport UI and navigation shell |
+| **11 Dashboard Views** | Phase 2 | **COMPLETED** | Build | Dashboard, telemetry, track, lap, driver, twin, ML, reports, and related views |
+| **16-Byte Packet Decoder** | Phase 3 | **COMPLETED** | `test_telemetry_pipeline.py` | Bitfield unpacking, encoding, and XOR checksum |
+| **Live Telemetry & WebSockets**| Phase 3 | **COMPLETED** | `test_telemetry_pipeline.py` | UDP listener and async WebSocket broadcaster |
+| **Time-to-Contact (TTC) Engine**| Phase 3 | **COMPLETED** | `test_telemetry_pipeline.py` | Physics closing speed and warning thresholds |
+| **SD-Card File Importer** | Phase 3 | **COMPLETED** | `test_telemetry_pipeline.py` | CSV and raw binary stream parser |
+| **Data Quality & Cleaning** | Phase 4 | **COMPLETED** | Unit tests | Missing clock/spike detection, audit report |
+| **Lap & Sector Segmentation** | Phase 4 | **COMPLETED** | Unit tests | GPS/dead reckoning lap detection, sector splits |
+| **Multi-Lap Trace Comparison** | Phase 4 | **COMPLETED** | Unit tests | Delta time ($\Delta t$) and speed ($\Delta v$) |
+| **Engine Anomaly Detector** | Phase 5 | **COMPLETED** | `test_ml_anomaly.py` | Isolation Forest, persisted joblib registry, training and prediction API |
 | **Lap-Time Predictor** | Phase 5 | *Pending* | - | XGBoost / Random Forest, session group split |
 | **Driver Behaviour Classifier**| Phase 5 | *Pending* | - | Steering rate, throttle onset consistency |
 | **Dynamic Grip Estimator** | Phase 5 | *Pending* | - | Effective $\mu$ from lateral G and radius |
-| **Point-Mass Physics Engine** | Phase 6 | *Pending* | - | Discretised track, power/drag/grip limits |
-| **Calibration Engine** | Phase 6 | *Pending* | - | Iterative RMSE tuning target $<5\%$ |
-| **What-If Scenario Simulator** | Phase 6 | *Pending* | - | Parameter delta evaluation with isolated output |
+| **Point-Mass Physics Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Discretised track, power/drag/grip limits |
+| **Calibration Engine** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Iterative RMSE calibration |
+| **What-If Scenario Simulator** | Phase 6 | **COMPLETED** | `test_digital_twin.py` | Parameter delta evaluation |
 | **Recommendation Engine** | Phase 7 | *Pending* | - | Evidence-based setup advice generation |
 | **PDF & CSV Report Exporter** | Phase 7 | *Pending* | - | Downloadable debrief dossiers |
 | **Synchronised Session Replay**| Phase 7 | *Pending* | - | Interactive telemetry-track synchronized playback |
@@ -80,12 +80,35 @@
 
 ---
 
-## 5. Next Implementation Tasks (Phase 1)
+## 5. Completed Work
 
-1. Scaffolding backend directory layout: `backend/app/{api,core,models,schemas,repositories,services}`.
-2. Implementing SQLAlchemy 2.0 models for all 22 entities in `backend/app/models/`.
-3. Setting up SQLite database connection engine and migration runner.
-4. Setting up FastAPI app with CORS middleware, structured logging, and `/health` route.
-5. Scaffolding React + TypeScript + Vite frontend in `frontend/`.
-6. Creating `docker-compose.yml` and testing backend/frontend startup.
+- Phase 0 planning and architecture documentation.
+- Phase 1 backend/frontend foundation and initial Alembic migration.
+- Phase 2 dashboard UI and navigation shell.
+- Phase 3 telemetry decoding, ingestion, WebSockets, TTC, and SD-card import.
+- Phase 4 cleaning, quality summaries, lap/sector segmentation, and lap comparison.
+- Phase 6 digital-twin solver, calibration, and what-if scenario engine.
 
+## 6. Pending Work
+
+### Immediate: Phase 5 — Machine Learning
+
+1. Build lap-time predictor with session-grouped validation.
+2. Build driver behaviour classifier.
+3. Build dynamic effective-grip estimator.
+4. Add the remaining ML models and model registry metadata.
+5. Add ML training/inference API endpoints and frontend wiring.
+
+### Remaining platform and release work
+
+6. Validate Docker Compose image builds and container startup when Docker is available.
+7. Add mock telemetry generator and complete end-to-end integration coverage.
+8. Complete recommendation engine, PDF/CSV reporting, and synchronized replay.
+9. Add frontend component/store tests.
+10. Complete technical documentation and final release checklist.
+
+## 7. Next Implementation Tasks (Phase 5)
+
+1. Implement the lap-time predictor with session-grouped train/test splits.
+2. Implement the driver behaviour classifier and grip estimator.
+3. Add model registry metadata and inference endpoints for the remaining ML models.
