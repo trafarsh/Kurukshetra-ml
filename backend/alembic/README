@@ -1,0 +1,7 @@
+Run migrations from the repository root:
+
+    alembic upgrade head
+    alembic downgrade base
+
+The migration URL is read from the backend settings and can be overridden with
+DATABASE_URL in the environment.

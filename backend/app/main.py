@@ -21,6 +21,7 @@ from app.api.routes import (
     tracks_router,
     sessions_router,
     telemetry_router,
+    ml_router,
 )
 
 logger = get_logger("main")
@@ -130,6 +131,7 @@ app.include_router(drivers_router, prefix=settings.API_V1_STR)
 app.include_router(tracks_router, prefix=settings.API_V1_STR)
 app.include_router(sessions_router, prefix=settings.API_V1_STR)
 app.include_router(telemetry_router, prefix=settings.API_V1_STR)
+app.include_router(ml_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/", tags=["Root"])
