@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY alembic.ini /app/alembic.ini
 COPY backend/ /app/backend/
 COPY machine-learning/ /app/machine-learning/
 COPY digital-twin/ /app/digital-twin/
@@ -20,5 +21,4 @@ ENV PYTHONPATH=/app/backend
 EXPOSE 8000
 EXPOSE 8888/udp
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

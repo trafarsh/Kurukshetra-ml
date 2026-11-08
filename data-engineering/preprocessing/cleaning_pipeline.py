@@ -22,6 +22,10 @@ class CleaningReport:
     spikes_removed: int
     interpolated_points: int
     completeness_pct: float
+    duplicate_timestamps: int = 0
+    timestamp_gaps: int = 0
+    dropout_points: int = 0
+    noise_ratio_pct: float = 0.0
 
 
 class TelemetryDataCleaner:
@@ -42,6 +46,8 @@ class TelemetryDataCleaner:
         raw_count = len(df)
         if raw_count == 0:
             return df, CleaningReport(0, 0, 0, 0, 0.0)
+        if "timestamp_us" not in df.columns:
+            raise ValueError("Telemetry data must contain a timestamp_us column")
 
         cleaned = df.copy()
 
@@ -49,7 +55,10 @@ class TelemetryDataCleaner:
         cleaned = cleaned.sort_values(by="timestamp_us").reset_index(drop=True)
 
         # 2. Deduplicate exact timestamps
+        duplicate_timestamps = int(cleaned["timestamp_us"].duplicated().sum())
         cleaned = cleaned.drop_duplicates(subset=["timestamp_us"]).reset_index(drop=True)
+        timestamp_deltas = cleaned["timestamp_us"].diff().dropna()
+        timestamp_gaps = int((timestamp_deltas > 150_000).sum())
 
         spikes_removed = 0
 
@@ -72,8 +81,9 @@ class TelemetryDataCleaner:
             cleaned.loc[invalid_speed, "speed_kmh"] = np.nan
 
         # 6. Interpolate small NaN gaps (limit 3 consecutive samples = ~150ms at 20Hz)
-        interpolated = int(cleaned.isna().sum().sum())
+        missing_before_interpolation = int(cleaned.isna().sum().sum())
         cleaned = cleaned.interpolate(method="linear", limit=3).bfill().ffill()
+        interpolated = missing_before_interpolation - int(cleaned.isna().sum().sum())
 
         report = CleaningReport(
             raw_record_count=raw_count,
@@ -81,7 +91,10 @@ class TelemetryDataCleaner:
             spikes_removed=spikes_removed,
             interpolated_points=interpolated,
             completeness_pct=round(len(cleaned) / raw_count * 100.0, 2) if raw_count > 0 else 0.0,
+            duplicate_timestamps=duplicate_timestamps,
+            timestamp_gaps=timestamp_gaps,
+            dropout_points=missing_before_interpolation,
+            noise_ratio_pct=round(spikes_removed / raw_count * 100.0, 2),
         )
 
         return cleaned, report
-

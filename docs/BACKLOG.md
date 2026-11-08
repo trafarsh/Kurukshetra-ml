@@ -50,11 +50,11 @@
 - [ ] **TASK-026 (P0):** Implement Mock Telemetry Generator simulating realistic track runs for testing.
 
 ### Epic 4: Data Engineering Pipeline & Analytics (Phase 4)
-- [ ] **TASK-027 (P0):** Build telemetry data cleaning pipeline (spike rejection, clock alignment).
-- [ ] **TASK-028 (P0):** Implement Data Quality Summary generator (completeness, noise ratio).
-- [ ] **TASK-029 (P0):** Implement Lap Detection engine (GPS threshold & dead-reckoning support).
-- [ ] **TASK-030 (P0):** Implement Sector Segmentation calculating min/max speeds and sector times.
-- [ ] **TASK-031 (P1):** Implement multi-lap delta comparison engine ($\Delta v$, $\Delta t$).
+- [x] **TASK-027 (P0):** Build telemetry data cleaning pipeline (spike rejection, clock alignment).
+- [x] **TASK-028 (P0):** Implement Data Quality Summary generator (completeness, noise ratio).
+- [x] **TASK-029 (P0):** Implement Lap Detection engine (GPS threshold & dead-reckoning support).
+- [x] **TASK-030 (P0):** Implement Sector Segmentation calculating min/max speeds and sector times.
+- [x] **TASK-031 (P1):** Implement multi-lap delta comparison engine ($\Delta v$, $\Delta t$).
 
 ### Epic 5: Machine Learning Predictive Analytics (Phase 5)
 - [ ] **TASK-032 (P0):** Feature engineering pipeline for session and sector aggregations.
@@ -84,4 +84,3 @@
 - [ ] **TASK-050 (P0):** Vitest frontend component and store test suite.
 - [ ] **TASK-051 (P0):** End-to-end integration test of the complete closed feedback loop.
 - [ ] **TASK-052 (P0):** Complete technical documentation (`TELEMETRY_PROTOCOL.md`, `USER_MANUAL.md`).
-
