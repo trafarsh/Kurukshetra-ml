@@ -2,7 +2,7 @@
 ## Kurukshetra Kart — IC Go-Kart Telemetry, Predictive Analytics & Digital Twin Platform
 **Organisation:** Kurukshetra Racing, SKCET  
 **Competition:** EKVC Season 4 — Innovation Round  
-**Last Updated:** November 2026 (Phase 0 Complete)  
+**Last Updated:** November 2026 (Phase 0 Complete; developer branches created and pushed)  
 
 ---
 
@@ -18,6 +18,19 @@
 
 ---
 
+## 1.1 Development Team & Branch Ownership
+
+| Developer | Branch | Responsibility | Current Status |
+| :--- | :--- | :--- | :--- |
+| **Arshad** | `arshad` | Project lead, integration, and master coordination | **Branch created and pushed** |
+| **Gayathri** | `gayathri` | UI/frontend implementation and ML data cleaning | **Branch created and pushed** |
+| **Muthashim** | `muthashim` | Embedded hardware integration and LCD driver/display work | **Branch created and pushed** |
+| **Shylesh** | `shylesh` | Embedded hardware integration and LCD driver/display work | **Branch created and pushed** |
+
+All four branches were created from the latest `origin/main` and published to the GitHub repository.
+
+---
+
 ## 2. Module Implementation Ledger
 
 | Module / Subsystem | Phase | Status | Test Coverage | Notes |
@@ -27,20 +40,20 @@
 | **Database Schema & Models** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/DATABASE.md` |
 | **API Specification** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/API.md` |
 | **Development Roadmap** | Phase 0 | **COMPLETED** | N/A | Saved at `docs/DEVELOPMENT_ROADMAP.md` |
-| **Backend Core & Config** | Phase 1 | *Pending* | - | FastAPI app, CORS, logging, health |
-| **Database Models & Alembic** | Phase 1 | *Pending* | - | SQLAlchemy 2.0 entities, SQLite migrations |
-| **Frontend Scaffolding** | Phase 1 | *Pending* | - | React, Vite, Tailwind, Router, TanStack Query |
-| **Docker Development Env** | Phase 1 | *Pending* | - | Dockerfile, docker-compose.yml |
-| **Navigation & Topbar** | Phase 2 | *Pending* | - | Dark motorsport UI, connection status |
-| **11 Dashboard Views** | Phase 2 | *Pending* | - | Overview, Live, Track, Lap, Driver, Twin, etc. |
-| **16-Byte Packet Decoder** | Phase 3 | *Pending* | - | Bitfield unpacking, XOR checksum |
-| **Live Telemetry & WebSockets**| Phase 3 | *Pending* | - | UDP listener, async WebSocket broadcaster |
-| **Time-to-Contact (TTC) Engine**| Phase 3 | *Pending* | - | Physics closing speed & warning thresholds |
-| **SD-Card File Importer** | Phase 3 | *Pending* | - | Multi-part upload, CSV/binary stream parser |
-| **Data Quality & Cleaning** | Phase 4 | *Pending* | - | Missing clock/spike detection, audit report |
-| **Lap & Sector Segmentation** | Phase 4 | *Pending* | - | GPS/dead reckoning lap detection, sector splits |
-| **Multi-Lap Trace Comparison** | Phase 4 | *Pending* | - | Delta time ($\Delta t$) and speed ($\Delta v$) |
-| **Engine Anomaly Detector** | Phase 5 | *Pending* | - | Isolation Forest, model serialization |
+| **Backend Core & Config** | Phase 1 | **COMPLETED** | Automated | FastAPI app, CORS, logging, health |
+| **Database Models & Alembic** | Phase 1 | **COMPLETED** | Automated | SQLAlchemy 2.0 entities, SQLite migrations |
+| **Frontend Scaffolding** | Phase 1 | **COMPLETED** | Build verified | React, Vite, Tailwind, Router, TanStack Query |
+| **Docker Development Env** | Phase 1 | **COMPLETED** | - | Docker Compose development configuration |
+| **Navigation & Topbar** | Phase 2 | **COMPLETED** | Build verified | Dark motorsport UI, connection status |
+| **11 Dashboard Views** | Phase 2 | **COMPLETED** | Build verified | Overview, Live, Track, Lap, Driver, Twin, etc. |
+| **16-Byte Packet Decoder** | Phase 3 | **COMPLETED** | Automated | Bitfield unpacking, XOR checksum |
+| **Live Telemetry & WebSockets**| Phase 3 | **COMPLETED** | Automated | UDP listener, async WebSocket broadcaster |
+| **Time-to-Contact (TTC) Engine**| Phase 3 | **COMPLETED** | Automated | Physics closing speed & warning thresholds |
+| **SD-Card File Importer** | Phase 3 | **COMPLETED** | Automated | Multi-part upload, CSV/binary stream parser |
+| **Data Quality & Cleaning** | Phase 4 | **COMPLETED** | Automated | Spike filtering, timestamp/dropout metrics, and audit report |
+| **Lap & Sector Segmentation** | Phase 4 | **COMPLETED** | Automated | GPS/manual/dead-reckoning lap detection and sector splits |
+| **Multi-Lap Trace Comparison** | Phase 4 | **COMPLETED** | Automated | Normalized delta time ($\Delta t$) and speed ($\Delta v$) traces |
+| **Engine Anomaly Detector** | Phase 5 | **IN PROGRESS** | Automated | Isolation Forest implementation and model serialization |
 | **Lap-Time Predictor** | Phase 5 | *Pending* | - | XGBoost / Random Forest, session group split |
 | **Driver Behaviour Classifier**| Phase 5 | *Pending* | - | Steering rate, throttle onset consistency |
 | **Dynamic Grip Estimator** | Phase 5 | *Pending* | - | Effective $\mu$ from lateral G and radius |
@@ -88,4 +101,3 @@
 4. Setting up FastAPI app with CORS middleware, structured logging, and `/health` route.
 5. Scaffolding React + TypeScript + Vite frontend in `frontend/`.
 6. Creating `docker-compose.yml` and testing backend/frontend startup.
-
