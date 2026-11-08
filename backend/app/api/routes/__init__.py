@@ -7,6 +7,7 @@ from app.api.routes.tracks import router as tracks_router
 from app.api.routes.sessions import router as sessions_router
 from app.api.routes.telemetry import router as telemetry_router
 from app.api.routes.ml import router as ml_router
+from app.api.routes.phase7 import router as phase7_router
 
 __all__ = [
     "health_router",
@@ -17,4 +18,5 @@ __all__ = [
     "sessions_router",
     "telemetry_router",
     "ml_router",
+    "phase7_router",
 ]

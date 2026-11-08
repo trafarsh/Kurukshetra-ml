@@ -65,3 +65,17 @@ export const healthApi = {
   ready: () => api.get('/health/ready'),
 };
 
+export const phase7Api = {
+  recommend: (metrics: Record<string, number>) =>
+    api.post('/recommendations', { metrics }),
+  generateReport: (data: {
+    report_id: string;
+    report_type?: string;
+    telemetry: Record<string, unknown>[];
+    summary: Record<string, unknown>;
+  }) => api.post('/reports', data),
+  downloadReport: (reportId: string, format: 'pdf' | 'csv') =>
+    api.get(`/reports/${encodeURIComponent(reportId)}/${format}`, { responseType: 'blob' }),
+  prepareReplay: (records: Record<string, unknown>[], speed = 1) =>
+    api.post('/replay/prepare', { records, speed }),
+};
